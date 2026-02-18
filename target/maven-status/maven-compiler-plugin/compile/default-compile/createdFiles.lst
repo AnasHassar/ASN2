@@ -1,0 +1,10 @@
+com/staffrating/model/StaffRating.class
+com/staffrating/config/DatabaseConfig.class
+com/staffrating/model/profile/TAProfile.class
+com/staffrating/model/profile/StaffMemberProfile.class
+com/staffrating/repository/StaffRatingRepository.class
+com/staffrating/RateCsStaffApplication.class
+com/staffrating/model/profile/ProfessorProfile.class
+com/staffrating/controller/HomeController.class
+com/staffrating/controller/HomeController$1.class
+com/staffrating/model/RoleType.class

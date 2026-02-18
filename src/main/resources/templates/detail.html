@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rating Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:if="${rating == null}" class="not-found">
+        <h1>Rating Not Found</h1>
+        <p>The rating you're looking for doesn't exist.</p>
+        <a href="/" class="back-link">Back to List</a>
+    </div>
+
+    <div th:if="${rating != null}" class="card">
+        <h1 th:text="${rating.name}"></h1>
+        
+        <div class="detail-row">
+            <span class="label">Email:</span>
+            <span class="value" th:text="${rating.email}"></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Role:</span>
+            <span class="value" th:text="${rating.roleType.displayName}"></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Clarity Score:</span>
+            <span class="value" th:text="${rating.clarity} + '/10'"></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Niceness Score:</span>
+            <span class="value" th:text="${rating.niceness} + '/10'"></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Knowledge Score:</span>
+            <span class="value" th:text="${rating.knowledgeableScore} + '/10'"></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Overall Score:</span>
+            <span class="score" th:text="${rating.overallScore}"></span>
+        </div>
+        
+        <div class="detail-row" th:if="${rating.comment != null and !rating.comment.isEmpty()}">
+            <span class="label">Comment:</span>
+            <span class="value" th:text="${rating.comment}"></span>
+        </div>
+        
+        <div class="detail-actions">
+            <a href="/" class="back-link">← Back to List</a>
+            <a th:href="@{/rating/{id}/edit(id=${rating.id})}" class="btn-edit">Edit</a>
+            <form th:action="@{/rating/{id}/delete(id=${rating.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this rating?');">
+                <button type="submit" class="btn-delete">Delete</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

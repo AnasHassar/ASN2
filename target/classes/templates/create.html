@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Rating</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="card">
+        <h1>Add New Staff Rating</h1>
+        
+        <form id="ratingForm" th:action="@{/create}" th:object="${rating}" method="post">
+            
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" th:field="*{name}" required minlength="2" maxlength="100" />
+                <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" th:field="*{email}" id="emailInput" required />
+                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                <span class="error" id="emailError" style="display:none;"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Role: <span style="color: red;">*</span></label>
+                <select th:field="*{roleType}" required>
+                    <option value="">-- Select Role --</option>
+                    <option th:each="role : ${roleTypes}" th:value="${role}" th:text="${role.displayName}"></option>
+                </select>
+                <span class="error" th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Clarity (1-10):</label>
+                <input type="number" th:field="*{clarity}" min="1" max="10" required />
+                <span class="error" th:if="${#fields.hasErrors('clarity')}" th:errors="*{clarity}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Niceness (1-10):</label>
+                <input type="number" th:field="*{niceness}" min="1" max="10" required />
+                <span class="error" th:if="${#fields.hasErrors('niceness')}" th:errors="*{niceness}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Knowledge (1-10):</label>
+                <input type="number" th:field="*{knowledgeableScore}" min="1" max="10" required />
+                <span class="error" th:if="${#fields.hasErrors('knowledgeableScore')}" th:errors="*{knowledgeableScore}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Comment (optional):</label>
+                <textarea th:field="*{comment}" rows="4" maxlength="500"></textarea>
+                <span class="error" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></span>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-submit" id="submitBtn">Add Rating</button>
+                <a href="/" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        var emailInput = document.getElementById('emailInput');
+        var emailError = document.getElementById('emailError');
+        var submitBtn = document.getElementById('submitBtn');
+        var emailTaken = false;
+        var checkTimer;
+
+        emailInput.addEventListener('input', function() {
+            clearTimeout(checkTimer);
+            var email = emailInput.value.trim();
+            if (email.length === 0) {
+                emailError.style.display = 'none';
+                emailTaken = false;
+                return;
+            }
+            checkTimer = setTimeout(function() {
+                fetch('/api/check-email?email=' + encodeURIComponent(email))
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (data.taken) {
+                            emailError.textContent = 'A rating with this email already exists';
+                            emailError.style.display = 'block';
+                            emailTaken = true;
+                        } else {
+                            emailError.style.display = 'none';
+                            emailTaken = false;
+                        }
+                    });
+            }, 400);
+        });
+
+        document.getElementById('ratingForm').addEventListener('submit', function(e) {
+            if (emailTaken) {
+                e.preventDefault();
+                emailError.textContent = 'A rating with this email already exists';
+                emailError.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
